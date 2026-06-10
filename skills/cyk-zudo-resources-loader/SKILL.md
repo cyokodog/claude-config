@@ -1,32 +1,33 @@
 ---
 name: cyk-zudo-resources-loader
 description: >-
-  https://github.com/Takazudo/claude-resources から指定されたスキル・エージェント・コマンド・フックを取り込む。依存するリソースも芋づる式に自動取得する。ユーザーが「〇〇を取り込みたい」「〇〇をインストールして」などと言ったときに使用。取り込み完了後は cyk-note-claude-settings を自動実行する。
+  ~/src/github.com/Takazudo/claude-resources のローカルリポジトリから指定されたスキル・エージェント・コマンド・フックをシンボリックリンクで取り込む。依存するリソースも芋づる式に自動取得する。ユーザーが「〇〇を取り込みたい」「〇〇をインストールして」などと言ったときに使用。取り込み完了後は cyk-note-claude-settings を自動実行する。
 disable-model-invocation: true
 ---
 
 # Zudo Resources Loader
 
-`https://github.com/Takazudo/claude-resources` から指定されたリソースを取得し、依存関係を芋づる式にローカルへ配置する。
+`~/src/github.com/Takazudo/claude-resources` のローカルリポジトリから指定されたリソースを取得し、依存関係を芋づる式にシンボリックリンクで配置する。
 
 ## リポジトリ構造とローカル配置先
 
-| リポジトリパス | ローカル配置先 | 備考 |
-|---------------|---------------|------|
-| `skills/<name>/` | `~/.claude/skills/<name>/` | ディレクトリごと |
-| `agents/<name>.md` | `~/.claude/agents/<name>.md` | 単一ファイル |
-| `commands/<name>.md` | `~/.claude/commands/<name>.md` | 単一ファイル |
-| `hooks/<name>` | `~/.claude/hooks/<name>` | 実行権限付与 |
+| ローカルリポジトリパス | 配置先 | 方法 |
+|----------------------|--------|------|
+| `skills/<name>/` | `~/.claude/skills/<name>` | ディレクトリへのシンボリックリンク |
+| `agents/<name>.md` | `~/.claude/agents/<name>.md` | ファイルへのシンボリックリンク |
+| `commands/<name>.md` | `~/.claude/commands/<name>.md` | ファイルへのシンボリックリンク |
+| `hooks/<name>` | `~/.claude/hooks/<name>` | ファイルへのシンボリックリンク（実行権限付与） |
 
 ## 実行手順
 
-### Step 1: リポジトリのリソース一覧を取得
+### Step 1: ローカルリポジトリのリソース一覧を取得
 
 ```bash
-gh api "repos/Takazudo/claude-resources/contents/skills" --jq '.[].name'
-gh api "repos/Takazudo/claude-resources/contents/agents" --jq '.[].name'
-gh api "repos/Takazudo/claude-resources/contents/commands" --jq '.[].name'
-gh api "repos/Takazudo/claude-resources/contents/hooks" --jq '.[].name'
+REPO=~/src/github.com/Takazudo/claude-resources
+ls "$REPO/skills"
+ls "$REPO/agents"
+ls "$REPO/commands"
+ls "$REPO/hooks"
 ```
 
 ### Step 2: 取り込み対象を特定
@@ -35,7 +36,7 @@ gh api "repos/Takazudo/claude-resources/contents/hooks" --jq '.[].name'
 
 ### Step 3: 依存関係の芋づる取得
 
-取り込み対象のファイルを取得し、以下のパターンで依存を検出する。依存が見つかれば、それも同様に取得・依存検出を繰り返す（既に処理済みのものはスキップ）。
+取り込み対象のファイルを読み込み、以下のパターンで依存を検出する。依存が見つかれば、それも同様に読み込み・依存検出を繰り返す（既に処理済みのものはスキップ）。
 
 **依存検出パターン:**
 
@@ -43,40 +44,34 @@ gh api "repos/Takazudo/claude-resources/contents/hooks" --jq '.[].name'
 2. **エージェント参照**: `subagent_type: "agent-name"` 形式
 3. **スクリプト直接参照**: `~/.claude/skills/<name>/` や `~/.claude/agents/<name>` へのパス
 
-検出した名前がリポジトリの各ディレクトリに存在するか確認し、存在すれば取り込み対象に追加する。
+検出した名前がローカルリポジトリの各ディレクトリに存在するか確認し、存在すれば取り込み対象に追加する。
 
-### Step 4: リソースを取得してローカルに配置
+### Step 4: シンボリックリンクで配置
 
 **スキルの場合:**
 
 ```bash
-# ディレクトリ内のファイル一覧を取得
-gh api "repos/Takazudo/claude-resources/contents/skills/<name>" --jq '.[].name'
-
-# 各ファイルを取得（サブディレクトリも再帰的に処理）
-gh api "repos/Takazudo/claude-resources/contents/skills/<name>/<file>" --jq '.content' | base64 -d > ~/.claude/skills/<name>/<file>
-
-# スクリプトファイルには実行権限を付与
-chmod +x ~/.claude/skills/<name>/scripts/*.sh 2>/dev/null || true
+REPO=~/src/github.com/Takazudo/claude-resources
+ln -sf "$REPO/skills/<name>" ~/.claude/skills/<name>
 ```
 
 **エージェントの場合:**
 
 ```bash
-gh api "repos/Takazudo/claude-resources/contents/agents/<name>.md" --jq '.content' | base64 -d > ~/.claude/agents/<name>.md
+ln -sf "$REPO/agents/<name>.md" ~/.claude/agents/<name>.md
 ```
 
 **コマンドの場合:**
 
 ```bash
-gh api "repos/Takazudo/claude-resources/contents/commands/<name>.md" --jq '.content' | base64 -d > ~/.claude/commands/<name>.md
+ln -sf "$REPO/commands/<name>.md" ~/.claude/commands/<name>.md
 ```
 
 **フックの場合:**
 
 ```bash
-gh api "repos/Takazudo/claude-resources/contents/hooks/<name>" --jq '.content' | base64 -d > ~/.claude/hooks/<name>
-chmod +x ~/.claude/hooks/<name>
+ln -sf "$REPO/hooks/<name>" ~/.claude/hooks/<name>
+chmod +x "$REPO/hooks/<name>"
 ```
 
 ### Step 5: 出力ディレクトリの確認
@@ -101,7 +96,7 @@ chmod +x ~/.claude/hooks/<name>
     （なし）
 ```
 
-「新規」= 新規追加、「更新」= 既存を上書き、「依存」= 芋づる式で取り込んだもの
+「新規」= 新規リンク作成、「更新」= 既存リンクを上書き（`ln -sf`）、「依存」= 芋づる式で取り込んだもの
 
 ### Step 7: cyk-note-claude-settings を実行
 
@@ -109,7 +104,7 @@ chmod +x ~/.claude/hooks/<name>
 
 ## 注意事項
 
-- 既存ファイルは上書きする（バージョン管理はリポジトリ側で行う）
-- スキルのサブディレクトリ（`scripts/` 等）も再帰的に取得する
-- 依存検出は取り込んだファイルの内容に基づく（リポジトリに存在しないものはスキップ）
+- 既存リンクは `ln -sf` で上書きする
+- スキルはディレクトリ単位でシンボリックリンクを張るため、サブディレクトリも自動的に参照される
+- 依存検出は取り込んだファイルの内容に基づく（ローカルリポジトリに存在しないものはスキップ）
 - `cyk-note-claude-settings` 自身や本スキル（`cyk-zudo-resources-loader`）は依存として取り込まない
