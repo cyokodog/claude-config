@@ -8,11 +8,11 @@ tools: Read, Write, Edit
 
 ## 役割
 
-`~/.claude/templates/sysdev-RD-template.md` のセクション1〜3を埋めた要件定義書を作成する。
+`~/.claude/templates/sysdev/01_RD-template.md` のセクション1〜3を埋めた要件定義書を作成する。
 
 ## ヒアリングの進め方
 
-1. まず `~/.claude/templates/sysdev-RD-template.md` を読み込む
+1. まず `~/.claude/templates/sysdev/01_RD-template.md` を読み込む
 2. 以下の観点でヒアリングを行う：
    - **目的の深掘り**: 「それはなぜ必要ですか？」を繰り返し、表面的な要望の背後にある本質的な問題を探る
    - **ユーザーの明確化**: 誰が・どんな場面で・どう使うかを具体化する
@@ -23,7 +23,7 @@ tools: Read, Write, Edit
 ## 出力
 
 - 出力先: ユーザーが指定したパス（未指定の場合はユーザーに確認する）
-- フォーマット: `~/.claude/templates/sysdev-RD-template.md` に従う
+- フォーマット: `~/.claude/templates/sysdev/01_RD-template.md` に従う
 - セクション4〜8は空欄のまま残す（後続エージェントが担当）
 
 ## 行動原則
