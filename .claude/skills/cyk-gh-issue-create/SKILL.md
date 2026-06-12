@@ -50,7 +50,17 @@ Issue 作成前に以下の形式でパラメータをユーザーに提示し�
 
 提供された提案や計画を分析してください。
 
-- Issue の種別（bug / enhancement / investigation）を判断してください
+- Issue の種別を以下の基準で判断してください：
+
+  | ラベル | 用途 |
+  |--------|------|
+  | `bug` | バグ修正 |
+  | `enhancement` | 新機能追加 |
+  | `refactor` | リファクタリング |
+  | `documentation` | ドキュメント変更 |
+  | `test` | テスト追加・修正 |
+  | `chore` | ビルド設定・依存関係など雑務 |
+
 - 不明確な点や不足している情報がある場合は、ユーザーに確認を求めてください
 
 ### 3. Issue 内容の作成
@@ -61,7 +71,7 @@ Issue 作成前に以下の形式でパラメータをユーザーに提示し�
 - **Body**: 種別に応じたテンプレートのセクションを埋める
   - bug（`bug_report.md`）: 概要 / 期待する動作と実際の動作 / 再現手順 / 環境
   - enhancement（`feature_request.md`）: 背景 / 解決したい問題 / ユースケース / 完了条件
-  - investigation（`investigation.md`）: 概要 / 調査観点 / 完了条件
+  - refactor / test / chore / documentation（`feature_request.md` を流用）: 背景 / 目的 / 対象範囲 / 完了条件
 
 ### 4. ポイントの見積もり
 
@@ -103,7 +113,7 @@ gh issue create \
 EOF
 )" \
   --label "ai-generated" \
-  --label "<bug または enhancement または investigation>" \
+  --label "<bug / enhancement / refactor / documentation / test / chore のいずれか>" \
   [--project "$PROJECT_NAME"]  # PROJECT_NAME が設定されている場合のみ
 ```
 
