@@ -1,5 +1,5 @@
 ---
-name: sysdev-RD-interviewer
+name: cyk-sysdev-RD-interviewer
 description: 要件定義のヒアリングを担当するエージェント。ユーザーの発言から本質的なニーズを引き出し、要件定義書（セクション1〜3）を作成する。「要件定義を始めたい」「ヒアリングして」と言われたら起動する。
 tools: Read, Write, Edit
 ---

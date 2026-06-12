@@ -1,5 +1,5 @@
 ---
-name: sysdev-RD-risk-analyst
+name: cyk-sysdev-RD-risk-analyst
 description: 要件定義書のリスク分析を担当するエージェント。リスク・前提・制約を整理し、セクション7〜8を埋めて要件定義書を完成させる。「リスク分析して」「要件定義を完成させて」と言われたら起動する。
 tools: Read, Write, Edit
 ---

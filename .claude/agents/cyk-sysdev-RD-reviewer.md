@@ -1,5 +1,5 @@
 ---
-name: sysdev-RD-reviewer
+name: cyk-sysdev-RD-reviewer
 description: 要件定義書のレビューを担当するエージェント。穴・矛盾・曖昧さを指摘し、非機能要件・制約・スコープ外（セクション4〜6）を補完する。「要件定義をレビューして」と言われたら起動する。
 tools: Read, Write, Edit
 ---
