@@ -3,7 +3,7 @@ name: cyk-gh-issue-create
 description: 提案や計画を基に GitHub Issue を作成する。ポイント見積もり・重複チェック・Project への登録まで一貫して行う。
 argument-hint: '[REPO_OWNER/REPO_NAME] [PROJECT_NAME] [PROJECT_ID] [POINTS_FIELD_ID]'
 compatibility: gh CLI 認証済みであること（gh auth status が通ること）。
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # cyk-gh-issue-create
@@ -18,11 +18,13 @@ disable-model-invocation: true
 
 1. `$ARGUMENTS` に `REPO_OWNER/REPO_NAME` 形式で指定があればそれを使う
 2. なければ作業ディレクトリの git リモート URL から取得する：
+
    ```bash
    git remote get-url origin
    ```
 
    - `github.com/OWNER/NAME` の形式からパースする
+
 3. 取得できない場合はユーザーに確認する
 
 #### PROJECT_NAME / PROJECT_ID / POINTS_FIELD_ID
@@ -52,14 +54,14 @@ Issue 作成前に以下の形式でパラメータをユーザーに提示し�
 
 - Issue の種別を以下の基準で判断してください：
 
-  | ラベル | 用途 |
-  |--------|------|
-  | `bug` | バグ修正 |
-  | `enhancement` | 新機能追加 |
-  | `refactor` | リファクタリング |
-  | `documentation` | ドキュメント変更 |
-  | `test` | テスト追加・修正 |
-  | `chore` | ビルド設定・依存関係など雑務 |
+  | ラベル          | 用途                         |
+  | --------------- | ---------------------------- |
+  | `bug`           | バグ修正                     |
+  | `enhancement`   | 新機能追加                   |
+  | `refactor`      | リファクタリング             |
+  | `documentation` | ドキュメント変更             |
+  | `test`          | テスト追加・修正             |
+  | `chore`         | ビルド設定・依存関係など雑務 |
 
 - 不明確な点や不足している情報がある場合は、ユーザーに確認を求めてください
 

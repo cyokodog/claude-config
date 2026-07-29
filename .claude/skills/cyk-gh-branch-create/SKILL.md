@@ -3,7 +3,7 @@ name: cyk-gh-branch-create
 description: GitHub Issue からブランチを作成し、実装計画を提示する。既存ブランチの命名規則を踏襲し、Issue の内容と実装を照合した計画をユーザーに提示する。
 argument-hint: '[REPO_OWNER/REPO_NAME] [ISSUE番号またはURL] [BASE_BRANCH]'
 compatibility: gh CLI 認証済み・git リポジトリ内であること（gh auth status が通ること）
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # cyk-gh-branch-create
@@ -21,6 +21,7 @@ disable-model-invocation: true
    ```bash
    git remote get-url origin
    ```
+
    - `github.com/OWNER/NAME` の形式からパースする
 3. 取得できない場合はユーザーに確認する
 
@@ -60,6 +61,7 @@ gh issue view <ISSUE番号> --repo "$REPO_OWNER/$REPO_NAME" --json number,title,
 ```
 
 取得した情報から以下を把握する：
+
 - Issue タイトル
 - ラベル（bug / enhancement / documentation / refactor / test / chore / hotfix など）
 - Issue 本文（完了条件・仕様の読み取りに使用）
@@ -78,15 +80,15 @@ gh api "repos/$REPO_OWNER/$REPO_NAME/branches" --jq '.[].name' | head -20
 
 Issue のラベルとタイトルから以下の基準でプレフィックスを決定する：
 
-| プレフィックス | 判断根拠 |
-|---|---|
-| `fix/` | `bug` ラベル、タイトルに「修正」「バグ」「fix」「bug」を含む |
-| `feat/` | `enhancement` / `feature` ラベル、タイトルに「機能」「追加」「feat」を含む |
-| `docs/` | `documentation` ラベル、タイトルに「ドキュメント」「docs」を含む |
-| `refactor/` | `refactor` ラベル、タイトルに「リファクタ」「refactor」を含む |
-| `test/` | `test` ラベル、タイトルに「テスト」「test」を含む |
-| `hotfix/` | `hotfix` ラベル、タイトルに「緊急」「hotfix」を含む |
-| `chore/` | 上記に該当しない場合 |
+| プレフィックス | 判断根拠                                                                   |
+| -------------- | -------------------------------------------------------------------------- |
+| `fix/`         | `bug` ラベル、タイトルに「修正」「バグ」「fix」「bug」を含む               |
+| `feat/`        | `enhancement` / `feature` ラベル、タイトルに「機能」「追加」「feat」を含む |
+| `docs/`        | `documentation` ラベル、タイトルに「ドキュメント」「docs」を含む           |
+| `refactor/`    | `refactor` ラベル、タイトルに「リファクタ」「refactor」を含む              |
+| `test/`        | `test` ラベル、タイトルに「テスト」「test」を含む                          |
+| `hotfix/`      | `hotfix` ラベル、タイトルに「緊急」「hotfix」を含む                        |
+| `chore/`       | 上記に該当しない場合                                                       |
 
 #### ブランチ名の生成
 
@@ -95,6 +97,7 @@ Issue のラベルとタイトルから以下の基準でプレフィックス�
 ```
 
 スラッグ化のルール：
+
 - 日本語はローマ字またはそのまま残す（簡潔に）
 - スペース・特殊文字はハイフン（`-`）に置換
 - 小文字に統一
