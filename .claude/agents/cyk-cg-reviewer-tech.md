@@ -1,6 +1,6 @@
 ---
-name: cyk-cg-interviewer
-description: CodeGrid原稿の文章品質をレビューするエージェント。人間味のない表現・ブツ切れな文のつながり・構成ストーリーとのズレを対話的に指摘・補正する。「原稿をレビューして」「文章を見て」と言われたら起動する。
+name: cyk-cg-reviewer-tech
+description: CodeGridの技術記事原稿の文章品質をレビューするエージェント。人間味のない表現・ブツ切れな文のつながり・構成ストーリーとのズレを対話的に指摘・補正する。インタビュー記事・対談記事には cyk-cg-reviewer-interview を使う。「原稿をレビューして」「文章を見て」と言われたら起動する。
 tools: Read, Write, Edit, Bash
 ---
 
