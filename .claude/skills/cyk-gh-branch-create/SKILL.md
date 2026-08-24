@@ -1,6 +1,6 @@
 ---
 name: cyk-gh-branch-create
-description: GitHub Issue からブランチを作成し、実装計画を提示する。既存ブランチの命名規則を踏襲し、Issue の内容と実装を照合した計画をユーザーに提示する。
+description: GitHub Issue からブランチを作成する。既存ブランチの命名規則を踏襲したブランチ名を提案し、承認を得てから作成する。
 argument-hint: '[REPO_OWNER/REPO_NAME] [ISSUE番号またはURL] [BASE_BRANCH]'
 compatibility: gh CLI 認証済み・git リポジトリ内であること（gh auth status が通ること）
 disable-model-invocation: false
@@ -18,11 +18,13 @@ disable-model-invocation: false
 
 1. `$ARGUMENTS` に `REPO_OWNER/REPO_NAME` 形式で指定があればそれを使う
 2. なければ作業ディレクトリの git リモート URL から取得する：
+
    ```bash
    git remote get-url origin
    ```
 
    - `github.com/OWNER/NAME` の形式からパースする
+
 3. 取得できない場合はユーザーに確認する
 
 #### ISSUE番号 / ISSUE URL（必須）
@@ -127,122 +129,4 @@ git pull origin <BASE_BRANCH>
 git checkout -b <ブランチ名>
 ```
 
-### 6. Issue 内容と実装の照合・計画提示
-
-Issue の完了条件・仕様とカレントディレクトリのコードを照合し、実装計画を作成してユーザーに提示する。
-
-- Issue 本文から完了条件・要件を読み取る
-- 関連するファイル・ディレクトリ・関数を特定する
-- 変更が必要な箇所とアプローチを整理する
-- 注意点・考慮事項があれば記載する
-
-提示形式：
-
-```
-## 実装計画
-
-### Issue 要件サマリー
-- <完了条件・要件を箇条書き>
-
-### 変更対象
-| ファイル | 変更内容 |
-|---------|---------|
-| path/to/file.ts | ～を追加・修正 |
-
-### 実装アプローチ
-1. ...
-2. ...
-
-### 注意点
-- ...
-```
-
-### 7. 実装・動作確認の対話
-
-実装計画をもとに実装を進め、ユーザーと対話しながら動作確認を行う。
-
-- ユーザーの指示に従い実装・修正を繰り返す
-- 必要に応じてテストや動作確認をユーザーに促す
-- ユーザーから「問題なし」「PRして」など確認完了のサインが出たら次のステップへ進む
-
-### 8. コミット確認
-
-未コミットの変更がある場合、適切なコミット粒度とコミットメッセージを提示してユーザーに確認を得る。
-
-```bash
-git status
-git diff
-```
-
-- 変更内容を把握し、論理的なまとまりでコミット単位を提案する
-- 各コミットのメッセージを以下の形式で提示する：
-
-```
-## コミット提案
-
-1. <コミットメッセージ>
-   対象: path/to/file.ts, path/to/other.ts
-
-2. <コミットメッセージ>
-   対象: path/to/another.ts
-```
-
-ユーザーの承認後にコミットを実行する。修正希望があれば内容を調整してから再提示する。
-
-### 9. PR 作成
-
-最終的に適用された実装計画の内容を PR 本文に含めて PR を作成する。
-
-```bash
-gh pr create \
-  --repo "$REPO_OWNER/$REPO_NAME" \
-  --title "<Issue タイトル>" \
-  --body "$(cat <<'EOF'
-refs #<ISSUE番号>
-
-## 実装計画
-
-### Issue 要件サマリー
-- <完了条件・要件を箇条書き>
-
-### 変更対象
-| ファイル | 変更内容 |
-|---------|---------|
-| path/to/file.ts | ～を追加・修正 |
-
-### 実装アプローチ
-1. ...
-2. ...
-
-### 注意点
-- ...
-EOF
-)"
-```
-
-- PR タイトルは Issue タイトルをそのまま使う
-- `refs #<ISSUE番号>` で Issue とリンクする
-- 本文の実装計画は Step 7 の対話を経て最終確定した内容を反映する
-
-### 10. マージ・クリーンアップ
-
-PR 作成後、以下をまとめてユーザーに確認する：
-
-```
-PR をマージし、以下を実行してもよいですか？
-
-1. PR をマージ
-2. GitHub 上のブランチを削除
-3. ローカルで <BASE_BRANCH> に切り替えて pull
-```
-
-ユーザーが yes の場合、以下を順に実行する：
-
-```bash
-gh pr merge --repo "$REPO_OWNER/$REPO_NAME" --squash --delete-branch
-git checkout <BASE_BRANCH>
-git pull origin <BASE_BRANCH>
-```
-
-- `--delete-branch` で GitHub 上のリモートブランチも同時に削除する
-- マージ方式（`--squash` / `--merge` / `--rebase`）はリポジトリの運用に合わせて判断する。不明な場合は `--squash` をデフォルトとする
+ブランチ作成が完了したら、ブランチ名と切り替え先を報告して完了する。
