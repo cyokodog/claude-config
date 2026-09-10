@@ -30,7 +30,25 @@ disable-model-invocation: false
 #### PROJECT_NAME / PROJECT_ID / POINTS_FIELD_ID
 
 1. `$ARGUMENTS` に指定があればそれを使う
-2. なければ **未設定とする**（ポイント付与・Project 登録はスキップ）
+2. なければ `gh` から自動検出する：
+
+   ```bash
+   # PROJECT_NAME / PROJECT_ID
+   gh project list --owner "$REPO_OWNER" --format json
+   ```
+
+   - `title` が `REPO_NAME` と**完全一致**する project を採用する
+   - 部分一致は使わない（owner 配下にはリポジトリと無関係な project が多数あり、誤検出するため）
+   - `number` と `id` を控える
+
+   ```bash
+   # POINTS_FIELD_ID
+   gh project field-list <NUMBER> --owner "$REPO_OWNER" --format json
+   ```
+
+   - `name` が `Points` のフィールドの `id` を採用する
+
+3. 自動検出でも見つからなければ **未設定とする**（ポイント付与・Project 登録はスキップ）
 
 #### ユーザーへの確認
 
@@ -43,9 +61,9 @@ Issue 作成前に以下の形式でパラメータをユーザーに提示し�
 |-----------|-----|--------|
 | REPO_OWNER | xxx | git remote / 引数 / 未解決 |
 | REPO_NAME | xxx | git remote / 引数 / 未解決 |
-| PROJECT_NAME | xxx | 引数 / （未設定：Project登録スキップ） |
-| PROJECT_ID | xxx | 引数 / （未設定：Project登録スキップ） |
-| POINTS_FIELD_ID | xxx | 引数 / （未設定：ポイント付与スキップ） |
+| PROJECT_NAME | xxx | 引数 / 自動検出 / （未設定：Project登録スキップ） |
+| PROJECT_ID | xxx | 引数 / 自動検出 / （未設定：Project登録スキップ） |
+| POINTS_FIELD_ID | xxx | 引数 / 自動検出 / （未設定：ポイント付与スキップ） |
 ```
 
 ### 2. 提案・計画の分析
@@ -67,13 +85,34 @@ Issue 作成前に以下の形式でパラメータをユーザーに提示し�
 
 ### 3. Issue 内容の作成
 
-`.github/ISSUE_TEMPLATE/` のテンプレートを読み込み、そのセクション構成に従って本文を作成してください。
+Issue 本文の主役は **「こういう問題がある」「こういうことを実現したい」「その時点でわかっている前提」** の3つ。読者にこれが伝わることが最も大事。
+
+**概要と詳細を混ぜない。** 概要の節にファイルパス・行番号・コード片を書かない。読者が「何を実現したいのか」を掴む前に実装詳細に突き落とさないこと。
+
+**実装方針・手順は Issue 本文に書かない。** それは実装計画md（`docs/issues/<N>/`、`cyk-impl-plan-create` の役割）に書く。Issue 本文に手順を書くと二重管理になり、どちらが正か分からなくなる。
 
 - **Title**: 機能や修正内容を簡潔に表す日本語のタイトル。動詞止め（「〜する」「〜を作成する」）は使わず、名詞止め（「〜の作成」「〜の修正」「〜の追加」）にする
-- **Body**: 種別に応じたテンプレートのセクションを埋める
-  - bug（`bug_report.md`）: 概要 / 期待する動作と実際の動作 / 再現手順 / 環境
-  - enhancement（`feature_request.md`）: 背景 / 解決したい問題 / ユースケース / 完了条件
-  - refactor / test / chore / documentation（`feature_request.md` を流用）: 背景 / 目的 / 対象範囲 / 完了条件
+- **Body**: セクション構成は以下で決める
+  - `.github/ISSUE_TEMPLATE/` が**ある**場合 → そのテンプレートのセクション構成に従う
+  - `.github/ISSUE_TEMPLATE/` が**ない**場合 → 種別によらず次の既定構成を使う
+
+既定の構成：
+
+```markdown
+## 概要
+
+<何が問題で、何を実現したいか。ファイルパス・行番号・コード片は書かない>
+
+## 前提
+
+<調査で分かっていること。ここで初めて具体名を出してよい。無ければ節ごと省略>
+
+## 完了条件
+
+- [ ] <条件>
+```
+
+bug の場合は `## 概要` に「期待する動作と実際の動作」「再現手順」「環境」を含める。
 
 ### 4. ポイントの見積もり
 
@@ -102,7 +141,28 @@ gh issue list --repo "$REPO_OWNER/$REPO_NAME" --search '"<タイトル>" in:titl
 - 結果が存在する場合は、作成をスキップして既存の Issue 番号を返してください
 - 結果が空の場合のみ、次のステップ（Issue 作成）に進んでください
 
-### 6. Issue の作成
+### 6. Issue 内容の確認
+
+作成前に、Step 3〜5 で決定した内容を以下の形式でユーザーに提示し、**OK をもらってから次のステップに進む**。
+
+```
+## 作成する Issue
+
+**Repo**: OWNER/NAME
+**Title**: <タイトル>
+**Labels**: ai-generated, <種別>
+**Points**: <ポイント>（未設定の場合は「スキップ」）
+**Project**: <PROJECT_NAME>（未設定の場合は「スキップ」）
+
+---
+
+<本文（Markdown そのまま）>
+```
+
+- ユーザーから修正指示があった場合は反映し、再度提示して確認を得る
+- 承認を得るまで `gh issue create` を実行しない
+
+### 7. Issue の作成
 
 `PROJECT_NAME` が設定されている場合は `--project` を付与し、未設定の場合は省略する。
 
@@ -123,12 +183,12 @@ EOF
 - Body は適切にフォーマットしてください（改行など）
 - 出力された URL から Issue 番号を取得してください
 
-### 7. Project Item ID の取得
+### 8. Project Item ID の取得
 
 `PROJECT_ID` が設定されている場合のみ実施する。
 
 ```bash
-cat <<GQL | gh api graphql -f query=-
+gh api graphql -f query="$(cat <<GQL
 {
   repository(owner: "$REPO_OWNER", name: "$REPO_NAME") {
     issue(number: <ISSUE_NUMBER>) {
@@ -141,12 +201,15 @@ cat <<GQL | gh api graphql -f query=-
   }
 }
 GQL
+)"
 ```
 
+- ヒアドキュメントは `-f query="$(cat <<GQL ... GQL)"` の形で渡す。`-f query=-` は stdin として解釈されず、`-` がそのままクエリ本体として送られて失敗する
+- `<<GQL` はクォートしない（`$REPO_OWNER` / `$REPO_NAME` を展開させるため）
 - `data.repository.issue.projectItems.nodes[0].id` から ID を抽出してください
 - `projectItems` が空（`nodes` が空配列）の場合、Issue がプロジェクトに追加されるまでの時間差が原因です。Issue 作成ステップには戻らず、数秒待ってからこのステップを再試行してください
 
-### 8. Points フィールドの設定
+### 9. Points フィールドの設定
 
 `POINTS_FIELD_ID` が設定されている場合のみ実施する。
 
