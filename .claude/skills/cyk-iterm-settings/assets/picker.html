@@ -1,0 +1,416 @@
+<title>iTerm 背景色ピッカー</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #eceae5;
+    --panel: #f7f6f3;
+    --ink: #23241f;
+    --ink-dim: #6b6d64;
+    --rule: #d6d4cc;
+    --accent: #4a6b3f;
+    --warn: #9a5b21;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: "IBM Plex Sans JP", -apple-system, "Hiragino Sans", sans-serif;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --ground: #16171a;
+      --panel: #1e2023;
+      --ink: #e4e3dd;
+      --ink-dim: #8e918a;
+      --rule: #32353a;
+      --accent: #8fb37e;
+      --warn: #d9954f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #16171a;
+    --panel: #1e2023;
+    --ink: #e4e3dd;
+    --ink-dim: #8e918a;
+    --rule: #32353a;
+    --accent: #8fb37e;
+    --warn: #d9954f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    padding-inline: 20px;
+    padding-block: 32px 64px;
+    line-height: 1.7;
+  }
+
+  .wrap { max-width: 860px; margin-inline: auto; display: flex; flex-direction: column; gap: 28px; }
+
+  header { display: flex; flex-direction: column; gap: 6px; }
+  h1 { font-size: 1.45rem; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: .01em; }
+  .path {
+    font-family: var(--mono); font-size: .82rem; color: var(--ink-dim);
+    overflow-x: auto; white-space: nowrap; padding-bottom: 2px;
+  }
+
+  /* ---- terminal preview ---- */
+  .term {
+    border: 1px solid var(--rule); border-radius: 7px; overflow: hidden;
+    box-shadow: 0 8px 28px rgb(0 0 0 / .16);
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 13px; background: #2c2e32; border-bottom: 1px solid #000;
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .term-title {
+    font-family: var(--mono); font-size: .72rem; color: #9ea29c;
+    margin-left: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .term-body {
+    font-family: var(--mono); font-size: .84rem; line-height: 1.75;
+    padding: 18px 16px 26px; min-height: 232px;
+    overflow-x: auto; white-space: pre;
+    transition: background-color .12s linear;
+  }
+  .p10k-seg { padding: 0 8px; }
+  .seg-dir { background: #2e6fa3; color: #e8f2fa; }
+  .seg-git { background: #4d7d2e; color: #eef7e6; }
+  .seg-arrow { color: #4d7d2e; }
+  .arrow-dir { color: #2e6fa3; }
+  .out-dim { color: #9298a0; }
+  .out-txt { color: #cdd2cc; }
+  .out-key { color: #cf9b5c; }
+  .out-str { color: #8fbf7a; }
+  .caret {
+    display: inline-block; width: .55em; height: 1.05em;
+    background: #cdd2cc; vertical-align: text-bottom;
+    animation: blink 1.15s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+
+  /* ---- controls ---- */
+  .panel {
+    background: var(--panel); border: 1px solid var(--rule);
+    border-radius: 7px; padding: 20px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .ctl-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field > label {
+    font-size: .68rem; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--ink-dim); font-weight: 600;
+  }
+  input[type="color"] {
+    width: 68px; height: 42px; padding: 3px; cursor: pointer;
+    border: 1px solid var(--rule); border-radius: 5px; background: var(--ground);
+  }
+  input[type="text"] {
+    font-family: var(--mono); font-size: .95rem; width: 118px; padding: 10px 11px;
+    border: 1px solid var(--rule); border-radius: 5px;
+    background: var(--ground); color: var(--ink);
+  }
+  input:focus-visible, button:focus-visible, .swatch:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  .sliders { display: flex; flex-direction: column; gap: 11px; flex: 1 1 250px; min-width: 210px; }
+  .slider { display: grid; grid-template-columns: 66px 1fr 42px; align-items: center; gap: 11px; }
+  .slider > label { font-size: .74rem; color: var(--ink-dim); }
+  .slider > output { font-family: var(--mono); font-size: .78rem; text-align: right; font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+  /* ---- brightness meter ---- */
+  .meter-wrap { display: flex; flex-direction: column; gap: 7px; }
+  .meter-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: .78rem; gap: 12px; flex-wrap: wrap;
+  }
+  .meter-head b { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+  .meter { position: relative; height: 7px; background: var(--rule); border-radius: 4px; }
+  .meter-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width .12s linear, background-color .12s linear; }
+  .meter-limit {
+    position: absolute; top: -4px; bottom: -4px; left: 53.3%;
+    width: 1px; background: var(--ink-dim);
+  }
+  .meter-note { font-size: .74rem; color: var(--ink-dim); }
+  .meter-note.warn { color: var(--warn); font-weight: 500; }
+
+  /* ---- swatches ---- */
+  .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .swatch {
+    font-family: var(--mono); font-size: .74rem; color: #d3d7d1;
+    border: 1px solid var(--rule); border-radius: 5px;
+    padding: 9px 12px; cursor: pointer; transition: border-color .1s;
+  }
+  .swatch:hover { border-color: var(--accent); }
+  .swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+  /* ---- decide ---- */
+  .decide { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  button.go {
+    font-family: var(--sans); font-size: .9rem; font-weight: 600;
+    padding: 11px 22px; border-radius: 5px; cursor: pointer;
+    border: 1px solid transparent; background: var(--accent); color: var(--panel);
+  }
+  button.go:hover:not(:disabled) { filter: brightness(1.1); }
+  button.go:disabled { opacity: .5; cursor: default; }
+  .status { font-size: .84rem; color: var(--ink-dim); }
+  .status.done { color: var(--accent); font-weight: 500; }
+
+  .foot { font-size: .79rem; color: var(--ink-dim); border-top: 1px solid var(--rule); padding-top: 16px; }
+  .foot code { font-family: var(--mono); font-size: .95em; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>iTerm 背景色ピッカー</h1>
+    <div class="path">__TARGET_DISPLAY__</div>
+  </header>
+
+  <div class="term">
+    <div class="term-bar">
+      <span class="dot" style="background:#e05f52"></span>
+      <span class="dot" style="background:#e2b23f"></span>
+      <span class="dot" style="background:#57b95b"></span>
+      <span class="term-title">__TARGET_BASENAME__ — zsh</span>
+    </div>
+    <div class="term-body" id="term"><span class="p10k-seg seg-dir"> __PROMPT_DIR__ </span><span class="arrow-dir">*</span><span class="p10k-seg seg-git"> main </span><span class="seg-arrow">*</span>
+<span class="out-dim">❯</span> <span class="out-txt">ls</span>
+
+<span class="out-str">README.md</span>   <span class="out-txt">package.json</span>   <span class="out-str">src/</span>   <span class="out-str">docs/</span>
+
+<span class="p10k-seg seg-dir"> __PROMPT_DIR__ </span><span class="arrow-dir">*</span><span class="p10k-seg seg-git"> main </span><span class="seg-arrow">*</span>
+<span class="out-dim">❯</span> <span class="out-txt">git status --short</span>
+<span class="out-str"> M</span> <span class="out-txt">src/index.ts</span>
+<span class="out-key">??</span> <span class="out-txt">docs/notes.md</span>
+
+<span class="p10k-seg seg-dir"> __PROMPT_DIR__ </span><span class="arrow-dir">*</span><span class="p10k-seg seg-git"> main </span><span class="seg-arrow">*</span>
+<span class="out-dim">❯</span> <span class="caret"></span></div>
+  </div>
+
+  <div class="panel">
+    <div class="ctl-row">
+      <div class="field">
+        <label for="pick">色</label>
+        <input type="color" id="pick" value="__INITIAL_HEX__">
+      </div>
+      <div class="field">
+        <label for="hex">HEX</label>
+        <input type="text" id="hex" value="__INITIAL_HEX__" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="sliders">
+        <div class="slider">
+          <label for="sl-h">色相 H</label>
+          <input type="range" id="sl-h" min="0" max="360" value="132">
+          <output id="out-h">132°</output>
+        </div>
+        <div class="slider">
+          <label for="sl-s">彩度 S</label>
+          <input type="range" id="sl-s" min="0" max="100" value="23">
+          <output id="out-s">23%</output>
+        </div>
+        <div class="slider">
+          <label for="sl-l">明度 L</label>
+          <input type="range" id="sl-l" min="0" max="40" value="11">
+          <output id="out-l">11%</output>
+        </div>
+      </div>
+    </div>
+
+    <div class="meter-wrap">
+      <div class="meter-head">
+        <span>知覚輝度 <span class="out-dim">0.299R + 0.587G + 0.114B</span></span>
+        <span><b id="lum">30.6</b> <span class="out-dim">/ 上限 80</span></span>
+      </div>
+      <div class="meter"><div class="meter-fill" id="meter-fill"></div><div class="meter-limit"></div></div>
+      <div class="meter-note" id="meter-note">プロンプトの可読性に問題ない範囲です。</div>
+    </div>
+
+    <div class="swatches" id="swatches"></div>
+
+    <div class="decide">
+      <button class="go" id="go">この色に決定</button>
+      <span class="status" id="status"></span>
+    </div>
+  </div>
+
+  <div class="foot">
+    決定すると、この色が保存されます。Claude Code のセッションで「決定した」と伝えれば <code>~/.iterm-dir-colors</code> に反映されます。
+  </div>
+</div>
+
+<script>
+  var PRESETS = [
+    { hex: "#2a0f0f", name: "red 赤" },
+    { hex: "#0f2a14", name: "green 緑" },
+    { hex: "#0f1f2a", name: "blue 青" },
+    { hex: "#2a250f", name: "yellow 黄" },
+    { hex: "#1a0f22", name: "purple 紫" },
+    { hex: "#0f2a2a", name: "cyan 水" },
+    { hex: "#2a1f0f", name: "orange 橙" },
+    { hex: "#2a0f1f", name: "pink 桃" },
+    { hex: "#1c1c1c", name: "gray 灰" }
+  ];
+
+  var INITIAL = "__INITIAL_HEX__";
+  var TARGET_PATH = "__TARGET_PATH__";
+
+  var pick = document.getElementById("pick");
+  var hexIn = document.getElementById("hex");
+  var slH = document.getElementById("sl-h"), slS = document.getElementById("sl-s"), slL = document.getElementById("sl-l");
+  var outH = document.getElementById("out-h"), outS = document.getElementById("out-s"), outL = document.getElementById("out-l");
+  var term = document.getElementById("term");
+  var lumEl = document.getElementById("lum");
+  var fill = document.getElementById("meter-fill");
+  var note = document.getElementById("meter-note");
+  var swatchBox = document.getElementById("swatches");
+  var goBtn = document.getElementById("go");
+  var statusEl = document.getElementById("status");
+
+  var current = INITIAL.replace(/^#/, "");
+  var dbRef = null;
+
+  function clean(s) { return String(s).replace(/^#/, "").toLowerCase(); }
+  function valid(s) { return /^[0-9a-f]{6}$/.test(clean(s)); }
+  function rgb(h) {
+    h = clean(h);
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+  function lum(h) { var c = rgb(h); return 0.299*c[0] + 0.587*c[1] + 0.114*c[2]; }
+
+  function toHsl(h) {
+    var c = rgb(h), r = c[0]/255, g = c[1]/255, b = c[2]/255;
+    var mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx - mn;
+    var hu = 0, sa = 0, li = (mx + mn) / 2;
+    if (d) {
+      sa = li > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+      if (mx === r) hu = ((g - b) / d + (g < b ? 6 : 0));
+      else if (mx === g) hu = (b - r) / d + 2;
+      else hu = (r - g) / d + 4;
+      hu *= 60;
+    }
+    return [Math.round(hu), Math.round(sa*100), Math.round(li*100)];
+  }
+  function fromHsl(hu, sa, li) {
+    hu = hu/360; sa = sa/100; li = li/100;
+    function hue(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    }
+    var r, g, b;
+    if (!sa) { r = g = b = li; }
+    else {
+      var q = li < 0.5 ? li * (1 + sa) : li + sa - li * sa;
+      var p = 2 * li - q;
+      r = hue(p, q, hu + 1/3); g = hue(p, q, hu); b = hue(p, q, hu - 1/3);
+    }
+    return [r,g,b].map(function (v) {
+      return Math.round(v*255).toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function render(h, from) {
+    current = clean(h);
+    var l = lum(current);
+    term.style.backgroundColor = "#" + current;
+    if (from !== "pick") pick.value = "#" + current;
+    if (from !== "hex") hexIn.value = "#" + current;
+    if (from !== "slider") {
+      var hsl = toHsl(current);
+      slH.value = hsl[0]; slS.value = hsl[1]; slL.value = Math.min(hsl[2], 40);
+      outH.textContent = hsl[0] + "°"; outS.textContent = hsl[1] + "%"; outL.textContent = hsl[2] + "%";
+    }
+    lumEl.textContent = l.toFixed(1);
+    fill.style.width = Math.min(l / 80 * 53.3, 100) + "%";
+    if (l > 80) {
+      fill.style.backgroundColor = "var(--warn)";
+      note.className = "meter-note warn";
+      note.textContent = "明るすぎます。プロンプトの文字が読みにくくなります。";
+    } else {
+      fill.style.backgroundColor = "var(--accent)";
+      note.className = "meter-note";
+      note.textContent = l > 55
+        ? "やや明るめですが、実用の範囲です。"
+        : "プロンプトの可読性に問題ない範囲です。";
+    }
+    Array.prototype.forEach.call(swatchBox.children, function (b) {
+      b.setAttribute("aria-pressed", clean(b.dataset.hex) === current ? "true" : "false");
+    });
+    statusEl.textContent = "";
+    statusEl.className = "status";
+    goBtn.disabled = false;
+  }
+
+  PRESETS.forEach(function (p) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "swatch";
+    b.dataset.hex = p.hex;
+    b.style.backgroundColor = p.hex;
+    b.textContent = p.name;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function () { render(p.hex); });
+    swatchBox.appendChild(b);
+  });
+
+  pick.addEventListener("input", function () { render(pick.value, "pick"); });
+  hexIn.addEventListener("input", function () {
+    if (valid(hexIn.value)) render(hexIn.value, "hex");
+  });
+  hexIn.addEventListener("blur", function () {
+    if (!valid(hexIn.value)) hexIn.value = "#" + current;
+  });
+  [slH, slS, slL].forEach(function (s) {
+    s.addEventListener("input", function () {
+      outH.textContent = slH.value + "°";
+      outS.textContent = slS.value + "%";
+      outL.textContent = slL.value + "%";
+      render(fromHsl(+slH.value, +slS.value, +slL.value), "slider");
+    });
+  });
+
+  goBtn.addEventListener("click", function () {
+    if (!dbRef) {
+      statusEl.className = "status";
+      statusEl.textContent = "保存できません。HEX を Claude Code に直接伝えてください。";
+      return;
+    }
+    goBtn.disabled = true;
+    statusEl.className = "status";
+    statusEl.textContent = "保存中…";
+    dbRef.set({
+      hex: current,
+      path: TARGET_PATH,
+      luminance: Math.round(lum(current) * 10) / 10,
+      decidedAt: new Date().toISOString()
+    }).then(function () {
+      statusEl.className = "status done";
+      statusEl.textContent = "#" + current + " で決定しました。Claude Code に「決定した」と伝えてください。";
+    }).catch(function (e) {
+      goBtn.disabled = false;
+      statusEl.className = "status";
+      statusEl.textContent = e && e.code === "not_granted"
+        ? "保存が許可されていません。HEX を Claude Code に直接伝えてください。"
+        : "保存に失敗しました。もう一度お試しください。";
+    });
+  });
+
+  render(INITIAL);
+
+  claude.use("db").then(function (db) {
+    if (!db) return;
+    dbRef = db.doc("choices/iterm-bg");
+    return dbRef.get().then(function (snap) {
+      if (snap.exists) {
+        var d = snap.data();
+        if (d && valid(d.hex)) render(d.hex);
+      }
+    });
+  }).catch(function () {});
+</script>
