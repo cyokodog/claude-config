@@ -29,7 +29,7 @@ Issue を起点とした一連の作業の**現在位置を判定し、次の1�
         ↓
 ④  cyk-impl-from-plan       Step を順に実装・記録（Issue コメント）
         ↓  ←─────────────────────────┐
-④.5 cyk-e2e-test-maker[-for-spa]  E2E テスト（環境がある PJ のみ）
+④.5 cyk-e2e-test-maker-by-claude-in-chrome / -for-spa  E2E テスト（環境がある PJ のみ）
         ↓                                          │
 ⑤  （スキルなし）          動作検証をどうするか相談 │
         ↓                                          │ ❌/⚠️ や検証failで ④ に戻る
@@ -66,7 +66,7 @@ grep -l '@playwright/test' package.json 2>/dev/null
 | プロジェクト | スキル |
 | --- | --- |
 | SPA | `cyk-e2e-test-maker-for-spa` |
-| それ以外 | `cyk-e2e-test-maker` |
+| それ以外 | `cyk-e2e-test-maker-by-claude-in-chrome` |
 
 引数はスキル側の `argument-hint` に従う（ファイル名・テスト内容・URL）。
 
@@ -250,7 +250,7 @@ Step が全完了して PR が無い場合、既定では **⑤（動作検証�
 | ② | `cyk-impl-plan-create` | `<N>` |
 | ③ | `cyk-gh-branch-create` | `<N>` |
 | ④ | `cyk-impl-from-plan` | `<N>` |
-| ④.5 | `cyk-e2e-test-maker-for-spa`（SPA）/ `cyk-e2e-test-maker`（それ以外）。環境が無ければ飛ばす | スキル側の `argument-hint` に従う |
+| ④.5 | `cyk-e2e-test-maker-for-spa`（SPA）/ `cyk-e2e-test-maker-by-claude-in-chrome`（それ以外）。環境が無ければ飛ばす | スキル側の `argument-hint` に従う |
 | ⑤ | （スキルなし。このスキル自身が担当。上記「⑤ 動作検証をどうするか相談する」を実行） | — |
 | ⑥ | `cyk-gh-pr-review` | `<N>`（終了後、修正が入っていれば上記「⑥ の後、⑦ に進む前の確認」を実行） |
 | ⑦ | `cyk-gh-pr-create` | `<N>` |
