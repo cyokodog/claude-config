@@ -10,4 +10,5 @@
 | [macos-scripting.md](macos-scripting.md) | AppleScript（Music.app）、APFS のクローン、Raycast からの起動 |
 | [headless-chrome.md](headless-chrome.md) | ヘッドレス Chrome でのスクリーンショット・画像書き出しのコツ |
 | [chrome-extension.md](chrome-extension.md) | Chrome 拡張（MV3）のサイドパネルと localhost 画面の連携 |
+| [git.md](git.md) | 管理から外したファイルがブランチの切り替えで上書きされる罠、`gh pr merge` の挙動 |
 | [claude-code.md](claude-code.md) | Claude Code の権限・自動判定まわり |

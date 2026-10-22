@@ -126,22 +126,28 @@ gh pr create --base "$DEFAULT" --title "<タイトル>" --body "<本文>"
 
 ### 9. マージ
 
+**先に確認:** この PR で git の管理から外したファイル（`git rm --cached` と `.gitignore`）があれば、マージの前に手元のファイルを管理外の場所へバックアップする。古い main に切り替えた瞬間、警告なしに古い内容で上書きされるため（`knowledge/git.md`）。
+
 ```bash
-gh pr merge <PR番号> --squash --delete-branch
+gh pr merge <PR番号> --squash
 ```
+
+`--delete-branch` は付けない。付けると gh がマージ後に手元を古い main に切り替えてから pull するため、上の上書きが起きる。リモートのブランチは手順 10 で消す。
 
 - マージ方式はリポジトリの設定に従う（`--squash` が使えなければ `--merge`）
 - **必須チェック（CI）がある場合は `--auto` を付け**、完了を待つか「自動マージ予約済み」と報告する
 - 自動モードの判定で止められたら、`~/.claude/settings.json` の `permissions.allow` に `Bash(gh pr merge:*)` があるか確かめ、なければユーザーに伝えて止まる（迂回しない）
 
-### 10. main に戻って pull
+### 10. main に戻ってブランチを消す
 
 ```bash
-git checkout "$DEFAULT" && git pull
+git fetch --prune origin
+git checkout -B "$DEFAULT" "origin/$DEFAULT"   # 古い main を経由せず、マージ後の main に直接移る
 git branch -D <作業ブランチ>
+git push origin --delete <作業ブランチ>
 ```
 
-squash マージ後のローカルブランチは未マージ扱いになるため `-D` を使う。
+squash マージ後のローカルブランチは未マージ扱いになるため `-D` を使う。バックアップしたファイルがあれば、ここで元に戻す。
 
 ### 11. 結果の報告
 
