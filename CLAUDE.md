@@ -20,13 +20,19 @@ Claude Code の設定（グローバルの CLAUDE.md / rules / skills / agents�
 
 ~/src/github.com/cyokodog/claude-config/.claude/rules/<name>.md  ← 実体（プロジェクトをまたぐルール）
 ~/.claude/rules/<name>.md  ->  上記                               ← リンク
+
+~/src/github.com/cyokodog/claude-config/.claude/settings.json     ← 実体（ユーザー設定: 権限・モデル・ステータスラインなど）
+~/.claude/settings.json  ->  上記                                  ← リンク
 ```
+
+`settings.json` は Claude Code 自身（`/config` や権限の許可）も書き換えるので、変更が git の差分として出る。意図した変更なら commit する。
+書き換えの際にリンクが実ファイルに置き換わってしまうことがあるため、下の検証で毎回確かめる。秘密の値（トークンなど）は `settings.json` に書かず、環境変数で渡す。
 
 リンクの粒度：
 
 - **skills はディレクトリ単位**でリンクする（`SKILL.md` 個別ではない）
 - **agents / rules はファイル単位**でリンクする（1ファイル＝1 `.md`）
-- **CLAUDE.md はファイル1つ**をリンクする
+- **CLAUDE.md と settings.json はファイル1つ**をリンクする
 
 `~/.claude` 自体、`~/.claude/skills`、`~/.claude/agents`、`~/.claude/rules` は実ディレクトリ。
 その配下の各エントリだけがリンクになっている。
@@ -87,6 +93,7 @@ rm ~/.claude/skills/<name>      # リンクを消す（実体ではない）
 # 壊れたリンクが無いこと
 find ~/.claude/skills ~/.claude/agents ~/.claude/rules -maxdepth 1 -type l ! -exec test -e {} \; -print
 [ -L ~/.claude/CLAUDE.md ] && [ -e ~/.claude/CLAUDE.md ] || echo "CLAUDE.md がリンクになっていない"
+[ -L ~/.claude/settings.json ] && [ -e ~/.claude/settings.json ] || echo "settings.json がリンクになっていない"
 
 
 # repo にあるのに ~/.claude にリンクが無いものを検出
