@@ -1,6 +1,6 @@
 # claude-config
 
-Claude Code の設定（skills / agents）を管理するリポジトリ。
+Claude Code の設定（グローバルの CLAUDE.md / rules / skills / agents）と、プロジェクトをまたぐナレッジ（`knowledge/`）を管理するリポジトリ。
 
 ## 構成
 
@@ -14,13 +14,31 @@ Claude Code の設定（skills / agents）を管理するリポジトリ。
 ~/.claude/agents/<name>.md  ->  上記                              ← リンク
 ```
 
+```
+~/src/github.com/cyokodog/claude-config/.claude/CLAUDE.md         ← 実体（全プロジェクト共通の指示）
+~/.claude/CLAUDE.md  ->  上記                                      ← リンク
+
+~/src/github.com/cyokodog/claude-config/.claude/rules/<name>.md  ← 実体（プロジェクトをまたぐルール）
+~/.claude/rules/<name>.md  ->  上記                               ← リンク
+```
+
 リンクの粒度：
 
 - **skills はディレクトリ単位**でリンクする（`SKILL.md` 個別ではない）
-- **agents はファイル単位**でリンクする（1エージェント＝1 `.md`）
+- **agents / rules はファイル単位**でリンクする（1ファイル＝1 `.md`）
+- **CLAUDE.md はファイル1つ**をリンクする
 
-`~/.claude` 自体、`~/.claude/skills`、`~/.claude/agents` は実ディレクトリ。
+`~/.claude` 自体、`~/.claude/skills`、`~/.claude/agents`、`~/.claude/rules` は実ディレクトリ。
 その配下の各エントリだけがリンクになっている。
+
+`knowledge/` はリンクしない（自動では読み込まれない）。`rules/knowledge-index.md` が目次 `knowledge/README.md` の場所を教え、必要なときに読ませる。
+ナレッジとルールの使い分けは `rules/personal-projects.md` を参照。
+
+### rules の書き方
+
+- 毎回読み込まれるので短く保つ。1 テーマ 1 ファイル
+- 特定のファイルを触るときだけ効けばよいものは、先頭の frontmatter の `paths:` で絞る（例: `rules/cyk-design-system.md`）
+- このリポジトリの中で作業すると、`.claude/CLAUDE.md` と `.claude/rules/` はプロジェクトの指示としても読み込まれる（`~/.claude/` 側と同じ内容が二重に入るだけで害はない）
 
 ## 鉄則：追加・リネーム・削除したら必ずリンクを張り直す
 
@@ -37,6 +55,9 @@ ln -s "$REPO/skills/<name>" ~/.claude/skills/<name>
 
 # agent（ファイル単位）
 ln -s "$REPO/agents/<name>.md" ~/.claude/agents/<name>.md
+
+# rule（ファイル単位）
+ln -s "$REPO/rules/<name>.md" ~/.claude/rules/<name>.md
 ```
 
 ### リネームしたとき
@@ -64,7 +85,9 @@ rm ~/.claude/skills/<name>      # リンクを消す（実体ではない）
 
 ```bash
 # 壊れたリンクが無いこと
-find ~/.claude/skills ~/.claude/agents -maxdepth 1 -type l ! -exec test -e {} \; -print
+find ~/.claude/skills ~/.claude/agents ~/.claude/rules -maxdepth 1 -type l ! -exec test -e {} \; -print
+[ -L ~/.claude/CLAUDE.md ] && [ -e ~/.claude/CLAUDE.md ] || echo "CLAUDE.md がリンクになっていない"
+
 
 # repo にあるのに ~/.claude にリンクが無いものを検出
 for d in ~/src/github.com/cyokodog/claude-config/.claude/skills/*/; do
@@ -72,6 +95,9 @@ for d in ~/src/github.com/cyokodog/claude-config/.claude/skills/*/; do
 done
 for f in ~/src/github.com/cyokodog/claude-config/.claude/agents/*.md; do
   n=$(basename "$f"); [ -e ~/.claude/agents/"$n" ] || echo "未リンク: agents/$n"
+done
+for f in ~/src/github.com/cyokodog/claude-config/.claude/rules/*.md; do
+  n=$(basename "$f"); [ -e ~/.claude/rules/"$n" ] || echo "未リンク: rules/$n"
 done
 ```
 
