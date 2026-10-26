@@ -5,7 +5,9 @@ Claude Code側の定義を原本とする。作業前に次を読む。
 - `.claude/CLAUDE.md`：全プロジェクト共通の行動指示。スキル変更後の同期手順も含む。
 - `CLAUDE.md`：このリポジトリの構成とClaude Code側のリンク維持手順。
 - `.claude/rules/knowledge-index.md`：横断ナレッジの入口。
-- 個人プロジェクトの開発では `.claude/rules/personal-projects.md`、UI変更では `.claude/rules/cyk-design-system.md` も読む。
+- 個人プロジェクトの開発では `.claude/rules/personal-projects.md` も読む。新規プロジェクトの作成・基盤構築、画面の相談・提案・実装では、UIファイルの有無にかかわらず `.claude/rules/cyk-design-system.md` も読む。
+
+個人プロジェクトの着手時は、適用する開発フローと、UIがある場合のデザインシステムの利用方針をユーザーに示す。画面を後回しにする依頼でも、この確認を省略しない。新規プロジェクトに作業を引き継ぐ際は、その `AGENTS.md` と `CLAUDE.md` に共通ルールの参照先と適用条件を残し、以後のセッションでも読めるようにする。
 
 `.claude/rules/` をCodexがClaude Codeと同様に自動適用すると仮定しない。対象条件を確認して必要なファイルを読む。指示が競合するときはユーザーの明示的な指示を優先し、コミットは明示的な依頼がある場合のみ行う。
 
