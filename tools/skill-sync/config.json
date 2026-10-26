@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "skills": {
+    "cyk-cg-writing-consult": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-doc-ask": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-doc-fetch": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-doc-translate": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-e2e-test-maker": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-e2e-test-maker-by-claude-in-chrome": {
+      "mode": "exclude",
+      "reason": "ユーザー方針によりClaude Code専用として確定。Codex向けの移植は行わない。"
+    },
+    "cyk-e2e-test-maker-for-spa": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-gh-branch-create": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-gh-flow": {
+      "mode": "exclude",
+      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+    },
+    "cyk-gh-flow-lite": {
+      "mode": "exclude",
+      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+    },
+    "cyk-gh-issue-create": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-gh-pr-create": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-gh-pr-review": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-impl-from-plan": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-impl-plan-create": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    },
+    "cyk-iterm-settings": {
+      "mode": "exclude",
+      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+    },
+    "cyk-knowledge-post-from-claude-talk": {
+      "mode": "exclude",
+      "reason": "原本が小文字のskill.mdで、SKILL.md形式の確認が必要。"
+    },
+    "cyk-levis-model-note": {
+      "mode": "exclude",
+      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+    },
+    "cyk-mercari-listing": {
+      "mode": "exclude",
+      "reason": "ユーザー指示で保留。変更したい箇所が多いため、今回の棚卸しでは定義を変更せず、後で別途検討する。"
+    },
+    "cyk-tech-tips": {
+      "mode": "link",
+      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
+    }
+  }
+}
