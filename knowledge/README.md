@@ -6,7 +6,7 @@
 | ファイル | 内容 |
 |---|---|
 | [yt-dlp.md](yt-dlp.md) | yt-dlp の落とし穴（複数インストール、`$VAR` 展開、画質・形式の選び方、403） |
-| [node-npm.md](node-npm.md) | Node / npm / Vite のバージョンの罠、`file:` と `github:` 依存の扱い、巨大文字列と正規表現 |
+| [node-npm.md](node-npm.md) | Node / npm / Vite のバージョンの罠、`file:` と `github:` 依存の扱い、巨大文字列と正規表現、組み込みの SQLite |
 | [macos-scripting.md](macos-scripting.md) | AppleScript（Music.app）、APFS のクローン、Raycast からの起動 |
 | [headless-chrome.md](headless-chrome.md) | ヘッドレス Chrome でのスクリーンショット・画像書き出しのコツ |
 | [chrome-extension.md](chrome-extension.md) | Chrome 拡張（MV3）のサイドパネルと localhost 画面の連携、接続キーの自動受け渡し、content script、専用タブ、画像の縮小 |

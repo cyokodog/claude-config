@@ -24,3 +24,9 @@
 
 - `/^(?:[A-Za-z0-9+/]{4})*(?:…)?$/` のような繰り返しグループで、スマホ写真の base64（数 MB）を `test` すると、V8 で `RangeError: Maximum call stack size exceeded` になる（Express では 500）。テスト用の小さな画像では気付かない。
 - 対策：長さの条件（base64 なら `length % 4 === 0`）と、グループを使わない単純な文字クラス（`/^[A-Za-z0-9+/]*={0,2}$/`）で判定する。
+
+## Node.js 組み込みの SQLite（`node:sqlite`）
+
+- Node 22.5 以上で `import { DatabaseSync } from 'node:sqlite'` が使える（22.13 以降はフラグ不要）。外部パッケージなしで、ファイル 1 つの DB を同期 API で読み書きできる。
+- 実験的機能なので起動時に `ExperimentalWarning` が出る。`node --disable-warning=ExperimentalWarning`、tsx なら `NODE_OPTIONS=--disable-warning=ExperimentalWarning` で消せる。
+- nodenv を使っていても、シェルの PATH に shims がないと別バージョンの node が使われる（v20 だと `node:sqlite` が無い）。起動スクリプトでは `export PATH="$HOME/.nodenv/shims:$PATH"` を通す。
