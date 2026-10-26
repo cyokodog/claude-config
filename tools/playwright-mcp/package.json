@@ -1,0 +1,9 @@
+{
+  "name": "cyk-playwright-mcp-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared Playwright MCP installation for Claude Code and Codex",
+  "dependencies": {
+    "@playwright/mcp": "0.0.83"
+  }
+}

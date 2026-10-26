@@ -11,6 +11,7 @@ Claude Code側の定義を原本とする。作業前に次を読む。
 
 共有スキルから別のスキルを呼ぶ場合は `tools/skill-sync/codex-compatibility.md` を読み、Claudeの `Skill` ツールを使う記述をCodexでのスキル読込・実行に読み替える。承認・停止条件は維持する。
 
+ブラウザ操作のツール・E2Eスキルの選択は `.claude/shared/cyk-browser-operations.md` の共通入口を使う。個別スキルに環境別の分岐を複写しない。
 
 ## スキル同期
 

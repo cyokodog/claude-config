@@ -1,5 +1,9 @@
 # Global Instructions
 
+## ブラウザ操作
+
+ブラウザを操作する作業では、先に `~/src/github.com/cyokodog/claude-config/.claude/shared/cyk-browser-operations.md` を読み、共通入口でツール・呼び先を選ぶ。各スキルにClaude／Codexごとの選択を複写しない。ユーザーの明示指定とスキル固有の承認・停止条件は維持する。
+
 ## スキル定義の変更後
 
 `~/src/github.com/cyokodog/claude-config/` のスキル原本・Codex用の差分・同期設定を追加／変更／改名／削除したら、`tools/skill-sync/README.md` を読み、分類の更新と同期処理（check → apply → check）まで実行して作業完了とする。同期をユーザーに指示し直させない。原本は `.claude/skills/` に維持し、`.agents/skills/` は直接編集しない。同期失敗や未対応項目は報告する。別プロジェクトで変更した場合も同様。コミット・プッシュの権限は別途既存の指示に従う。

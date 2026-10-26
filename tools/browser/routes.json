@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "clients": {
+    "claude": {
+      "browser": {"provider": "claude-in-chrome"},
+      "research": {"provider": "playwright-mcp"},
+      "e2e": {"provider": "claude-in-chrome", "skill": "cyk-e2e-test-maker-by-claude-in-chrome"},
+      "spa-e2e": {"provider": "playwright-mcp", "skill": "cyk-e2e-test-maker-for-spa"}
+    },
+    "codex": {
+      "browser": {"provider": "playwright-mcp"},
+      "research": {"provider": "playwright-mcp"},
+      "e2e": {"provider": "playwright-mcp", "skill": "cyk-e2e-test-maker"},
+      "spa-e2e": {"provider": "playwright-mcp", "skill": "cyk-e2e-test-maker-for-spa"}
+    }
+  }
+}
