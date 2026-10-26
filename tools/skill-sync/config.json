@@ -72,8 +72,9 @@
       "reason": "原本が小文字のskill.mdで、SKILL.md形式の確認が必要。"
     },
     "cyk-levis-model-note": {
-      "mode": "exclude",
-      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+      "mode": "overlay",
+      "reason": "通常取得を優先し、情報不足時だけ共通入口research経由でPlaywright MCPを使う。Claude固有のブラウザ手順は廃止。Codex版はfrontmatterと汎用エージェント呼び出しを調整。",
+      "source_digest": "63b0ca6194f656100e701925750173d61a2a78b0213fc0e7e4dfa5f87b03dc42"
     },
     "cyk-mercari-listing": {
       "mode": "exclude",
