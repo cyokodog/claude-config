@@ -13,3 +13,5 @@ Claude Code側を原本として維持し、Codex向けのスキルは同期ツ�
 
 定義を変更したAIが同期・検証まで行う。常駐監視は使わない。
 初版ではユーザー共通のCodexスキル配置やエージェント変換は扱わない。
+
+`.agents/` と `.playwright-mcp/` はGit管理から除外する。スキル出力は `python3 tools/skill-sync/sync.py apply` で再生成し、ブラウザの操作ログ・画像は作業データとして扱う。

@@ -2,3 +2,5 @@
 .skill-sync/
 __pycache__/
 tools/playwright-mcp/node_modules/
+/.agents/
+/.playwright-mcp/
