@@ -19,3 +19,8 @@
 ## TypeScript の CommonJS で `__dirname`
 
 - `package.json` に `"type": "module"` がない TS（tsx / ts-node で実行）は CommonJS 扱いで `__dirname` が使える。ESM の Vite 設定では `import.meta.dirname` を使う。
+
+## 数 MB の文字列を繰り返しグループの正規表現で検証すると落ちる
+
+- `/^(?:[A-Za-z0-9+/]{4})*(?:…)?$/` のような繰り返しグループで、スマホ写真の base64（数 MB）を `test` すると、V8 で `RangeError: Maximum call stack size exceeded` になる（Express では 500）。テスト用の小さな画像では気付かない。
+- 対策：長さの条件（base64 なら `length % 4 === 0`）と、グループを使わない単純な文字クラス（`/^[A-Za-z0-9+/]*={0,2}$/`）で判定する。

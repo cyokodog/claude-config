@@ -11,3 +11,9 @@
 
 - 管理から外すファイルがある PR では、マージの前に手元のファイルをバックアップする（`cp <file> <file>.bak` など、管理外の場所へ）。
 - 手元の切り替えは、古い main を経由せず `git fetch && git checkout -B main origin/main` で新しい main に直接移る。`gh pr merge` には `--delete-branch` を付けず、切り替えを自分でやる。
+
+## ghq の一覧に `node_modules/<依存>` が出て、プロジェクト本体が出ない
+
+- ghq は `.git` を目印にリポジトリを探し、見つけたらその中には入らない。Git を初期化していないプロジェクトは一覧に出ず、ghq はその中まで探しに入る。
+- `"<pkg>": "file:../<pkg>"` の依存は `node_modules/<pkg>` が Git 管理の別リポジトリへのシンボリックリンクになるため、ghq はそれを `…/<project>/node_modules/<pkg>` というリポジトリとして一覧に出す。`ghq list | peco` で選ぶと、プロジェクトではなく依存先のリポジトリを開いてしまう。
+- 対策：プロジェクトで `git init` する（コミット不要）。本体が一覧に出て、`node_modules` 側は出なくなる。
