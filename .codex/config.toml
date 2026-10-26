@@ -1,0 +1,3 @@
+# MCP・モデル・権限はユーザー設定を使う。Claude専用の環境変数は注入しない。
+[shell_environment_policy]
+inherit = "core"
