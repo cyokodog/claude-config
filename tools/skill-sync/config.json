@@ -68,10 +68,6 @@
       "reason": "Claude原本を維持。Codex版はローカルの色ピッカーとPlaywright MCPを使い、決定値を対象パス・セッションで検証する。自動起動禁止も維持。",
       "source_digest": "e8d881d258aae1611d3514d949a8eabef48261b0dd3e59f03e27b56a2d1d0893"
     },
-    "cyk-knowledge-post-from-claude-talk": {
-      "mode": "exclude",
-      "reason": "原本が小文字のskill.mdで、SKILL.md形式の確認が必要。"
-    },
     "cyk-levis-model-note": {
       "mode": "overlay",
       "reason": "通常取得を優先し、情報不足時だけ共通入口research経由でPlaywright MCPを使う。Claude固有のブラウザ手順は廃止。Codex版はfrontmatterと汎用エージェント呼び出しを調整。",
@@ -80,10 +76,6 @@
     "cyk-mercari-listing": {
       "mode": "exclude",
       "reason": "ユーザー指示で保留。変更したい箇所が多いため、今回の棚卸しでは定義を変更せず、後で別途検討する。"
-    },
-    "cyk-tech-tips": {
-      "mode": "link",
-      "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
     }
   }
 }
