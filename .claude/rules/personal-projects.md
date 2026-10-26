@@ -9,15 +9,6 @@
 
 ## 学びの仕分け
 
-作業中に得た学び・経緯は、セッションで使い捨てずに次のどこかへ残す。どこに書くかは AI が判断し、マージ前の承認ゲートで案を示す。
+知見の抽出・保存先・目次更新は `~/src/github.com/cyokodog/claude-config/.claude/shared/cyk-knowledge-recording.md` を共通の定義として使う。通常のGHフローもライト版も同じ手順を参照する。
 
-| 内容 | 置き場所 |
-|---|---|
-| その Issue で起きた経緯・試行錯誤・判断（すったもんだ） | Issue 本文・コメント と `docs/issues/<N>/worklog.md` |
-| そのプロジェクトで意味を持つ知見 | プロジェクトの `docs/knowledge/<topic>.md`（目次 `docs/knowledge/README.md`） |
-| プロジェクトをまたいで役立つ知見 | `~/src/github.com/cyokodog/claude-config/knowledge/<topic>.md`（目次 `README.md`） |
-| プロジェクトをまたいで守るルール | `~/src/github.com/cyokodog/claude-config/.claude/rules/<topic>.md`（`~/.claude/rules/` にリンク） |
-
-- `docs/` 以下はディレクトリ名・ファイル名を英語、本文は日本語にする。
-- 既存のファイルがあれば追記・更新する。同じ内容を複数の場所に重複して書かない（片方からもう片方へリンクする）。
-- 横断ナレッジやルールを足したら、claude-config で commit する（このリポジトリは main に直接 commit して push する運用）。
+通常版はPR作成前、ライト版は既存のマージ前承認ゲートで候補と保存先を提示し、承認された範囲で保存する。作業経緯は各フローのIssue・worklogの記録手順に従う。コミット・プッシュはユーザーの明示的な指示に従う。

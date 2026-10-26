@@ -34,12 +34,14 @@
       "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
     },
     "cyk-gh-flow": {
-      "mode": "exclude",
-      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+      "mode": "overlay",
+      "reason": "ブラウザとE2Eの選択は両製品共通の入口に委譲。Codex差分はスキル起動方法とfrontmatterの調整。",
+      "source_digest": "39056369d62fa83db16dd27aee984d5c978d5b0f8e3056fc0e1baefbddaea759"
     },
     "cyk-gh-flow-lite": {
-      "mode": "exclude",
-      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+      "mode": "overlay",
+      "reason": "ブラウザ操作は共通入口を利用。CodexではClaude用の権限設定検査を除き、コミット等の明示的な実行許可と実際の承認手続きを維持。",
+      "source_digest": "e91c913d7b7b6853ab707e500184761b0ef3b43493d5e8064dfbaae9b066152c"
     },
     "cyk-gh-issue-create": {
       "mode": "link",

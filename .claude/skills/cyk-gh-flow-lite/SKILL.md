@@ -85,7 +85,7 @@ git checkout -b "feat/#<N>-<短い英語のスラッグ>"
 
 1. **型チェック・ビルド** — `npx tsc --noEmit`、`npm run build` 等（プロジェクトに応じて）
 2. **既存テスト** — テストスクリプトがあれば実行する
-3. **E2E（Playwright）** — UI 挙動が絡む変更なら、実際にブラウザを動かして確認する。**Playwright が未導入なら、断らずにインストールしてよい**（`npm i -D @playwright/test && npx playwright install chromium`）
+3. **E2E（Playwright）** — UI 挙動が絡む変更なら、実際にブラウザを動かして確認する。ブラウザ操作は `~/src/github.com/cyokodog/claude-config/.claude/shared/cyk-browser-operations.md` の共通入口を使う。操作による確認は目的 `browser`、E2Eコードを作成する場合は `e2e`（SPA向けの記録手順を使う場合は `spa-e2e`）を指定し、返ったツール・スキルを使う。作成したテストは対象プロジェクトのPlaywrightで実行する。**Playwright が未導入なら、断らずにインストールしてよい**（`npm i -D @playwright/test && npx playwright install chromium`）
 4. **その他の手段** — CLI なら実際に叩く、API なら curl で叩く、スクリプトなら実行する。手段は問わない
 
 E2E で導入したものの扱い（既定）:
@@ -109,7 +109,7 @@ E2E で導入したものの扱い（既定）:
 
 ### 7. 記録・ナレッジを書いて commit
 
-1. 承認された案に従って、Issue の更新・コメント、`docs/issues/<N>/worklog.md`、`docs/knowledge/`、claude-config を書く
+1. 承認された案に従って、Issue の更新・コメント、`docs/issues/<N>/worklog.md` を書く。ナレッジは下記「ナレッジの残し方」で参照する共通手順に従って保存・目次更新する
 2. `git status --short` で、`.env` 系や実行時の状態ファイルなど**コミットすべきでないものが混ざっていないか**確認する
 3. commit する。メッセージは `git log --oneline -20` の慣習に合わせる。粒度は規模に応じて決める（小さければ 1 つ、大きければ意味のまとまりごと）
 
@@ -173,18 +173,9 @@ squash マージ後のローカルブランチは未マージ扱いになるた�
 
 ## ナレッジの残し方
 
-作業で得た学びのうち、この Issue を離れても役立つものは、ナレッジとして残す。
+`~/src/github.com/cyokodog/claude-config/.claude/shared/cyk-knowledge-recording.md` の共通手順に従い、知見を抽出してプロジェクト固有・横断ナレッジ・行動ルールに仕分ける。保存先や書き方をこのスキルへ複写しない。
 
-| 内容 | 置き場所 |
-|---|---|
-| そのプロジェクトで意味を持つ知見（仕組み、運用手順、決まりごと） | `docs/knowledge/<topic>.md`。目次 `docs/knowledge/README.md` に 1 行で要約を足す |
-| プロジェクトをまたいで役立つ知見（ツールの罠、OS・ブラウザの挙動など） | `~/src/github.com/cyokodog/claude-config/knowledge/<topic>.md`。目次 `README.md` に足す |
-| プロジェクトをまたいで守るルール | `~/src/github.com/cyokodog/claude-config/.claude/rules/<topic>.md`。新規なら `~/.claude/rules/` にリンクを張る（claude-config の CLAUDE.md の手順） |
-
-- `docs/` 以下はディレクトリ名・ファイル名を英語、本文は日本語
-- 1 テーマ 1 ファイル。既存のファイルに合うテーマなら追記する
-- ルールは毎回読み込まれるので短く保つ。特定のファイルを触るときだけ効けばよいものは `paths:` で絞る
-- 経緯（いつ何があったか）はナレッジに書かない。ナレッジは「次にどうすればよいか」だけを書き、経緯は worklog に置く
+手順6の既存の承認ゲートで候補と保存先を提示し、承認後の手順7で保存・目次更新を行う。再利用できる知見がなければその旨を報告する。作業の経緯は上記のIssue・worklogの記録手順に従う。
 
 ## 止まる条件
 
