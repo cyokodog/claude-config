@@ -55,4 +55,6 @@ python3 tools/skill-sync/sync.py apply --adopt-existing
 python3 -m unittest discover -s tools/skill-sync/tests -v
 ```
 
+色ピッカーのテストは検証用のループバックHTTPサーバーを起動する。ポート待受けが制限される環境では、通常の承認手続きを使って実行する。実際のiTerm色設定は変更しない。
+
 原本の変更は、既存のClaude Code用ホームリンクからも参照される。定義の追加・削除時は `CLAUDE.md` のClaude側リンク維持手順も実施する。

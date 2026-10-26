@@ -64,8 +64,9 @@
       "reason": "原本の作業手順と参照先を共有する。Claude固有の製品名・パスへの一括置換は行わない。実行には記載された外部ツールが必要。"
     },
     "cyk-iterm-settings": {
-      "mode": "exclude",
-      "reason": "Codex向けの個別調整は後続のコミットで追加する。"
+      "mode": "overlay",
+      "reason": "Claude原本を維持。Codex版はローカルの色ピッカーとPlaywright MCPを使い、決定値を対象パス・セッションで検証する。自動起動禁止も維持。",
+      "source_digest": "e8d881d258aae1611d3514d949a8eabef48261b0dd3e59f03e27b56a2d1d0893"
     },
     "cyk-knowledge-post-from-claude-talk": {
       "mode": "exclude",
