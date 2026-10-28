@@ -41,7 +41,7 @@
     "cyk-gh-flow-lite": {
       "mode": "overlay",
       "reason": "ブラウザ操作は共通入口を利用。CodexではClaude用の権限設定検査を除き、コミット等の明示的な実行許可と実際の承認手続きを維持。",
-      "source_digest": "e91c913d7b7b6853ab707e500184761b0ef3b43493d5e8064dfbaae9b066152c"
+      "source_digest": "161f8ee0f419b570c0f7e0fb1178a94d7d88e83deb465900692f53a312a95b40"
     },
     "cyk-gh-issue-create": {
       "mode": "link",
