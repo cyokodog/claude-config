@@ -9,6 +9,6 @@
 | [node-npm.md](node-npm.md) | Node / npm / Vite のバージョンの罠、`file:` と `github:` 依存の扱い、巨大文字列と正規表現、組み込みの SQLite |
 | [macos-scripting.md](macos-scripting.md) | AppleScript（Music.app）、APFS のクローン、Raycast からの起動 |
 | [headless-chrome.md](headless-chrome.md) | ヘッドレス Chrome でのスクリーンショット・画像書き出しのコツ |
-| [chrome-extension.md](chrome-extension.md) | Chrome 拡張（MV3）のサイドパネルと localhost 画面の連携、接続キーの自動受け渡し、content script、専用タブ、画像の縮小 |
+| [chrome-extension.md](chrome-extension.md) | Chrome 拡張（MV3）のサイドパネルと localhost 画面の連携、接続キーの自動受け渡し、content script、専用タブ、画像の縮小、ページ自身の API の応答を拾う、長い処理と拡張の役割の分け方 |
 | [git.md](git.md) | 管理から外したファイルがブランチの切り替えで上書きされる罠、`gh pr merge` の挙動、ghq に `node_modules` が出る罠 |
-| [claude-code.md](claude-code.md) | Claude Code の権限・自動判定まわり |
+| [claude-code.md](claude-code.md) | Claude Code の権限・自動判定まわり、長いセッションと引き継ぎ・AI とプログラムの切り分け |
